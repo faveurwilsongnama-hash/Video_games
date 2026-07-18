@@ -1,0 +1,243 @@
+/* ==== Page d'accueil de l'arcade ==== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-dark: #0b0e1a;
+  --bg-card: #151a2e;
+  --neon-pink: #ff4d8f;
+  --neon-cyan: #29d8ff;
+  --neon-purple: #a855f7;
+  --neon-yellow: #ffd93d;
+  --text-main: #eef1ff;
+  --text-dim: #8b93b5;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* Fond animé en grille néon */
+.arcade-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(168, 85, 247, 0.18), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(41, 216, 255, 0.14), transparent 55%),
+    var(--bg-dark);
+}
+
+.arcade-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(41, 216, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(41, 216, 255, 0.06) 1px, transparent 1px);
+  background-size: 46px 46px;
+  animation: grid-drift 14s linear infinite;
+}
+
+@keyframes grid-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 0 46px; }
+}
+
+/* En-tête */
+.arcade-header {
+  text-align: center;
+  padding: 56px 20px 32px;
+}
+
+.arcade-title {
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-yellow), var(--neon-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: title-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes title-glow {
+  from { filter: drop-shadow(0 0 6px rgba(255, 77, 143, 0.45)); }
+  to   { filter: drop-shadow(0 0 18px rgba(41, 216, 255, 0.65)); }
+}
+
+.arcade-subtitle {
+  margin-top: 12px;
+  color: var(--text-dim);
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+}
+
+/* Grille de jeux */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 340px));
+  justify-content: center;
+  gap: 28px;
+  width: 100%;
+  max-width: 1100px;
+  padding: 12px 24px 48px;
+}
+
+.game-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+a.game-card:hover,
+a.game-card:focus-visible {
+  transform: translateY(-6px) scale(1.02);
+  border-color: var(--neon-cyan);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 0 24px rgba(41, 216, 255, 0.25);
+}
+
+/* Vignette du casse-briques (dessinée en CSS) */
+.game-thumb {
+  position: relative;
+  height: 170px;
+  background: linear-gradient(180deg, #10142a, #1a1040);
+  overflow: hidden;
+}
+
+.thumb-bricks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 18px 22px 0;
+}
+
+.thumb-bricks span {
+  height: 16px;
+  border-radius: 4px;
+}
+
+.thumb-bricks span:nth-child(-n+4) {
+  background: linear-gradient(180deg, #ff6b6b, #d63a3a);
+  box-shadow: 0 0 8px rgba(255, 107, 107, 0.6);
+}
+
+.thumb-bricks span:nth-child(n+5) {
+  background: linear-gradient(180deg, #ffd93d, #e0a800);
+  box-shadow: 0 0 8px rgba(255, 217, 61, 0.6);
+}
+
+.thumb-ball {
+  position: absolute;
+  left: 50%;
+  bottom: 52px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, var(--neon-cyan));
+  box-shadow: 0 0 12px var(--neon-cyan);
+  animation: thumb-bounce 1.6s ease-in-out infinite;
+}
+
+@keyframes thumb-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, -34px); }
+}
+
+.thumb-paddle {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  width: 84px;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+  box-shadow: 0 0 12px rgba(255, 77, 143, 0.6);
+  animation: thumb-paddle-move 1.6s ease-in-out infinite;
+}
+
+@keyframes thumb-paddle-move {
+  0%, 100% { transform: translateX(-70%); }
+  50%      { transform: translateX(-30%); }
+}
+
+/* Vignette "bientôt" */
+.coming-soon {
+  opacity: 0.55;
+}
+
+.soon-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.soon-thumb span {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  animation: soon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes soon-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 0.9; transform: scale(1.1); }
+}
+
+/* Texte des cartes */
+.game-info {
+  padding: 18px 20px 22px;
+}
+
+.game-info h2 {
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+}
+
+.game-info p {
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+
+.play-btn {
+  display: inline-block;
+  padding: 8px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0b0e1a;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  box-shadow: 0 0 14px rgba(41, 216, 255, 0.35);
+  transition: box-shadow 0.25s ease;
+}
+
+a.game-card:hover .play-btn {
+  box-shadow: 0 0 22px rgba(41, 216, 255, 0.65);
+}
+
+/* Pied de page */
+.arcade-footer {
+  margin-top: auto;
+  padding: 20px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  text-align: center;
+}

@@ -1,0 +1,252 @@
+/* ==== Casse-Briques ==== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-dark: #0b0e1a;
+  --neon-cyan: #29d8ff;
+  --neon-pink: #ff4d8f;
+  --neon-purple: #a855f7;
+  --neon-green: #4ade80;
+  --neon-yellow: #ffd93d;
+  --text-main: #eef1ff;
+  --text-dim: #8b93b5;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(168, 85, 247, 0.18), transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(41, 216, 255, 0.14), transparent 55%),
+    var(--bg-dark);
+  overflow: hidden;
+}
+
+/* Lien retour vers l'arcade */
+.back-link {
+  position: fixed;
+  top: 16px;
+  left: 18px;
+  z-index: 10;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(21, 26, 46, 0.7);
+  backdrop-filter: blur(6px);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+}
+
+/* Conteneur principal, centré et responsive */
+.game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(96vw, 820px);
+  padding: 10px;
+}
+
+/* HUD : score / niveau / vies */
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 22px;
+  border-radius: 14px;
+  background: rgba(21, 26, 46, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.hud-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+}
+
+.hud-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(41, 216, 255, 0.5);
+  transition: transform 0.15s ease;
+}
+
+.hud-value.lives {
+  font-size: 1.05rem;
+  text-shadow: none;
+}
+
+/* Petite pulsation quand le score change (classe ajoutée en JS) */
+.hud-value.bump {
+  animation: bump 0.25s ease;
+}
+
+@keyframes bump {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* Zone de jeu */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.55),
+    0 0 30px rgba(41, 216, 255, 0.12);
+}
+
+/* Secousse de l'écran quand on perd une vie (classe ajoutée en JS) */
+.canvas-container.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-7px, 3px); }
+  40% { transform: translate(6px, -4px); }
+  60% { transform: translate(-4px, 2px); }
+  80% { transform: translate(3px, -2px); }
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #10142a 0%, #151a36 60%, #1a1040 100%);
+  cursor: none;
+}
+
+/* Écrans superposés (start / game over / victoire) */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  padding: 20px;
+  background: rgba(11, 14, 26, 0.88);
+  backdrop-filter: blur(5px);
+  animation: overlay-in 0.35s ease;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; transform: scale(1.05); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.overlay-title {
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 4px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 14px rgba(41, 216, 255, 0.45));
+}
+
+.game-over-title {
+  background: linear-gradient(90deg, var(--neon-pink), #ff6b6b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 14px rgba(255, 77, 143, 0.55));
+  animation: gameover-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes gameover-pulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+
+.win-title {
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow));
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 14px rgba(74, 222, 128, 0.55));
+}
+
+.overlay-text {
+  color: var(--text-dim);
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  line-height: 1.6;
+}
+
+.overlay-text span {
+  color: var(--neon-yellow);
+  font-weight: 800;
+  font-size: 1.2em;
+}
+
+.overlay-btn {
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0b0e1a;
+  padding: 13px 38px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  box-shadow: 0 0 18px rgba(41, 216, 255, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.overlay-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 0 30px rgba(41, 216, 255, 0.7);
+}
+
+.overlay-btn:active {
+  transform: scale(0.97);
+}
+
+.controls-hint {
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+@media (max-height: 760px) {
+  .game-wrapper { gap: 8px; }
+  .hud { padding: 6px 18px; }
+  .hud-value { font-size: 1.1rem; }
+}
