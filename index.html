@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Games Arcade</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="arcade-bg" aria-hidden="true"></div>
+
+  <header class="arcade-header">
+    <h1 class="arcade-title">🕹️ Video Games Arcade</h1>
+    <p class="arcade-subtitle">Une collection de mini-jeux jouables dans le navigateur</p>
+  </header>
+
+  <main class="games-grid">
+    <!-- Pour ajouter un jeu : dupliquer une carte et pointer vers /nom-du-jeu/ -->
+    <a class="game-card" href="breakout/">
+      <div class="game-thumb breakout-thumb">
+        <div class="thumb-bricks">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="thumb-ball"></div>
+        <div class="thumb-paddle"></div>
+      </div>
+      <div class="game-info">
+        <h2>Casse-Briques</h2>
+        <p>Détruisez toutes les briques sans laisser tomber la balle !</p>
+        <span class="play-btn">▶ Jouer</span>
+      </div>
+    </a>
+
+    <div class="game-card coming-soon">
+      <div class="game-thumb soon-thumb"><span>?</span></div>
+      <div class="game-info">
+        <h2>Bientôt…</h2>
+        <p>D'autres jeux arrivent prochainement dans l'arcade.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="arcade-footer">
+    <p>Video Games Arcade — fait avec HTML, CSS &amp; JavaScript pur</p>
+  </footer>
+</body>
+</html>
