@@ -35,27 +35,17 @@
       <!-- Flash rouge quand on perd une vie -->
       <div class="hit-flash" id="hitFlash"></div>
 
-      <!-- Écran de paiement -->
-      <div class="overlay pay-screen" id="payScreen">
-        <div class="pay-card">
-          <div class="pay-lock">🔒</div>
-          <h1 class="pay-title">Jeu verrouillé</h1>
-          <p class="pay-text">
-            Envoie <strong>5 GHS</strong> via <span class="momo">MTN Mobile Money</span><br>
-            au numéro&nbsp;:
-          </p>
-          <div class="pay-number">0532799355</div>
-          <button class="big-btn pay-btn" id="unlockBtn">✅ J'ai payé, débloquer le jeu</button>
-        </div>
-      </div>
-
-      <!-- Écran d'accueil -->
-      <div class="overlay hidden" id="homeScreen">
+      <!-- Écran d'accueil (jeu libre, note de soutien optionnelle en bas) -->
+      <div class="overlay" id="homeScreen">
         <h1 class="game-title">OBSTACLE<br>RUSH&nbsp;!</h1>
         <p class="overlay-text">Saute, glisse et cours le plus loin possible !</p>
         <div class="best-badge">🏆 Meilleur score : <span id="homeBest">0</span> m</div>
         <button class="big-btn play-btn" id="playBtn">▶ Jouer</button>
         <p class="overlay-hint">ESPACE / clic = sauter &nbsp;·&nbsp; ⬇ = glisser</p>
+        <div class="support-note">
+          <span class="support-text">Wilson needs money please help him 🙏</span>
+          <span class="support-momo"><span class="momo">MTN MoMo</span>&nbsp;: <strong>0532799355</strong></span>
+        </div>
       </div>
 
       <!-- Écran Perdu -->
