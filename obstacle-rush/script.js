@@ -11,7 +11,6 @@ const timerEl = document.getElementById("timer");
 const scoreEl = document.getElementById("scoreDisplay");
 const hitFlashEl = document.getElementById("hitFlash");
 
-const payScreen = document.getElementById("payScreen");
 const homeScreen = document.getElementById("homeScreen");
 const gameOverScreen = document.getElementById("gameOverScreen");
 const homeBestEl = document.getElementById("homeBest");
@@ -35,7 +34,6 @@ const STAND = { w: 38, h: 62 };   // hitbox debout
 const SLIDE = { w: 44, h: 32 };   // hitbox en glissade
 
 const BEST_KEY = "obstacleRushBest";
-const UNLOCK_KEY = "obstacleRushUnlocked";
 
 // Les 3 niveaux de difficulté (temps en secondes)
 const PHASES = [
@@ -83,7 +81,7 @@ const state = {
 // ---- Écrans / navigation ----
 
 function showScreen(el) {
-  [payScreen, homeScreen, gameOverScreen].forEach(s => s.classList.add("hidden"));
+  [homeScreen, gameOverScreen].forEach(s => s.classList.add("hidden"));
   if (el) el.classList.remove("hidden");
 }
 
@@ -91,11 +89,6 @@ function goHome() {
   homeBestEl.textContent = state.best;
   showScreen(homeScreen);
 }
-
-document.getElementById("unlockBtn").addEventListener("click", () => {
-  localStorage.setItem(UNLOCK_KEY, "1");
-  goHome();
-});
 
 document.getElementById("playBtn").addEventListener("click", startRun);
 document.getElementById("replayBtn").addEventListener("click", startRun);
@@ -634,7 +627,7 @@ function drawGround(theme) {
   if (cursor < W) drawGroundSegment(cursor, W, theme);
 
   // Parois des trous
-  ctx.fillStyle = "rgba(0,0,0,0.35)";
+  ctx.fillStyle = "#241c33";
   for (const g of sorted) {
     const gx = Math.max(-10, g.x);
     const gw = Math.min(W + 10, g.x + g.w) - gx;
@@ -806,6 +799,38 @@ function drawPlayer() {
   ctx.restore();
 }
 
+// Texte flottant au-dessus de la tête du personnage
+function drawPlayerLabel() {
+  const p = state.player;
+  const kb = p.knockback * 26;
+  const x = PLAYER_X - kb;
+
+  // Hauteur du corps selon la posture (mêmes valeurs que drawPlayer)
+  const bh = p.sliding ? 34 : (p.grounded ? 62 : 68);
+  const bob = Math.sin(state.time * 3.2) * 4;          // flottement doux
+  const y = p.y - bh - 24 + bob;
+
+  const text = "Wilson";
+  ctx.font = "700 15px 'Comic Sans MS', 'Segoe UI', sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // Fond semi-transparent arrondi pour détacher le texte du décor
+  const tw = ctx.measureText(text).width;
+  const padX = 10, padY = 7;
+  ctx.fillStyle = "rgba(45, 52, 54, 0.55)";
+  roundRect(x - tw / 2 - padX, y - padY - 8, tw + padX * 2, 16 + padY * 2, 11);
+  ctx.fill();
+
+  // Texte avec léger contour
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.45)";
+  ctx.strokeText(text, x, y);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(text, x, y);
+  ctx.textBaseline = "alphabetic";
+}
+
 function drawParticles() {
   for (const pt of state.particles) {
     ctx.globalAlpha = Math.max(0, pt.life);
@@ -823,6 +848,7 @@ function draw() {
   drawGround(theme);
   drawObstacles();
   drawPlayer();
+  drawPlayerLabel();
   drawParticles();
 }
 
@@ -853,11 +879,6 @@ for (let i = 0; i < 5; i++) {
   });
 }
 
-if (localStorage.getItem(UNLOCK_KEY) === "1") {
-  goHome();
-} else {
-  showScreen(payScreen);
-}
-
+goHome();
 updateHud();
 requestAnimationFrame(loop);
